@@ -1,4 +1,49 @@
+import React, { useEffect, useState } from "react";
+import { db } from "../firebase";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+
 const CareersPage = () => {
+  const [username, setUsername] = useState("ahmet");
+  const [users, setUsers] = useState("ahmet");
+  const [age, setAge] = useState(20);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      // 'users' koleksiyonuna yeni bir belge ekle
+      await addDoc(collection(db, "users"), {
+        username: username,
+        age: parseInt(age),
+        createdAt: new Date()
+      });
+      alert("Kullanıcı başarıyla eklendi!");
+      setUsername("");
+      setAge("");
+    } catch (error) {
+      console.error("Veri ekleme hatası:", error);
+    }
+  };
+
+
+async function getData() {
+  const querySnapshot = await getDocs(collection(db, "users"));
+  const tempUsers = [];
+  querySnapshot.forEach((doc) => {
+    console.log(doc.data());
+    const { username, age } = doc.data();   
+   tempUsers.push({ id: doc.id, username, age });
+  });
+  setUsers(tempUsers);
+  console.log("tempUsers")
+  console.log(tempUsers)
+}
+  
+  useEffect(()=>{
+    getData();
+  },[])
+
+
   return (
     <div>
       <h1 className="p-4 text-3xl font-bold text-center text-white bg-black">
@@ -67,7 +112,8 @@ const CareersPage = () => {
             </p>
           </div>
           <button
-            type="submit"
+            // type="submit"
+            onClick={handleSubmit}
             className="w-full bg-[#b0823b] text-white p-2 rounded-lg transition hover:bg-[#e3c24f]"
           >
             Gönder
