@@ -16,6 +16,7 @@ const ContactPage = () => {
           <div className="w-full xl:w-1/2  bg-white p-6 shadow-lg rounded-lg  ">
             <h2 className="text-2xl text-black font-bold text-black text-center">
               İletişim
+              
             </h2>
 
             <form className="mt-4  text-black">
