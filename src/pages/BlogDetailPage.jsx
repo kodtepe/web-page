@@ -31,23 +31,33 @@ const BlogDetailPage = () => {
   }, [id]);
 
   if (loading) {
-    return <div className="text-center py-20 text-gray-600">Yükleniyor...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen text-gray-500 text-lg font-inter">
+        Yükleniyor...
+      </div>
+    );
   }
 
   if (!blog) {
-    return <div className="text-center py-20 text-red-600">Blog bulunamadı.</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen text-red-600 text-lg font-inter">
+        Blog bulunamadı.
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white font-inter">
       {/* Başlık Alanı */}
-      <header className="bg-black text-white text-center py-10">
-        <h1 className="text-3xl sm:text-4xl font-bold">{blog.title}</h1>
+      <header className="bg-black text-white text-center py-14 px-6 shadow-md">
+        <h1 className="text-3xl sm:text-5xl font-bold font-mont animate-fade-in-up">
+          {blog.title}
+        </h1>
       </header>
 
-      {/* İçerik Alanı */}
-      <main className="flex-grow px-6 py-12 max-w-4xl mx-auto text-justify">
-        <article className="text-gray-800 leading-relaxed whitespace-pre-line">
+      {/* İçerik */}
+      <main className="flex-grow px-6 py-16 max-w-4xl mx-auto">
+        <article className="text-gray-700 leading-relaxed whitespace-pre-line text-lg font-inter animate-fade-in-up">
           {blog.summary}
         </article>
       </main>
