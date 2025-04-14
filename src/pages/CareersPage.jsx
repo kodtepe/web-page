@@ -17,7 +17,7 @@ const CareersPage = () => {
 • Sorumluluk sahibi, problem çözme odaklı
 
 Lokasyon: Çanakkale Teknopark
-Çalışma Süresi: Minimum 3 ay`,
+`,
     },
     {
       id: "frontend",
@@ -30,7 +30,7 @@ Lokasyon: Çanakkale Teknopark
 • Git bilgisi
 
 Lokasyon: Çanakkale Teknopark
-Çalışma Süresi: Minimum 3 ay`,
+`,
     },
   ];
 
@@ -48,11 +48,10 @@ Lokasyon: Çanakkale Teknopark
         <div className="absolute inset-0 bg-black opacity-60" />
         <div className="relative z-10 text-white text-center px-6">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-mont leading-tight animate-fade-in-up">
-            Yazılımın Zirvesi Seni Bekliyor
+          Kariyerini Kodtepe’yle Planla
           </h1>
           <p className="mt-4 text-base font-inter leading-relaxed text-gray-400 sm:text-lg max-w-2xl mx-auto animate-fade-in-up">
-            Kodtepe, teknolojiyi işlevsellik ile buluşturan güçlü bir ekip
-            arkadaşıyla büyümeye devam ediyor.
+          Kodtepe’nin kültürünü tanıman ve birlikte geliştirmemiz için seni ekip arkadaşımız olarak görmekten mutluluk duyarız.
           </p>
         </div>
       </section>

@@ -33,11 +33,10 @@ const ContactPage = () => {
         <div className="absolute inset-0 bg-black opacity-60" />
         <div className="relative z-10 text-white text-center px-6">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-mont leading-tight animate-fade-in-up">
-            Sorularınız Bizim İçin Bir <br /> Başlangıçtır
+          Her Mesaj, Bizim İçin Değerli.
           </h1>
           <p className="mt-4 text-base font-inter text-gray-400 leading-relaxed sm:text-lg max-w-2xl mx-auto">
-            Her büyük projenin bir ilk adımı vardır. İhtiyacınıza özel çözümler,
-            hızlı geri dönüş ve güvenilir iş ortaklığı için bizimle tanışın.
+          Sorularınızı ve önerilerinizi bizimle paylaşın. Sizi dinlemek ve en uygun çözümleri sunmak için buradayız.
           </p>
         </div>
       </section>

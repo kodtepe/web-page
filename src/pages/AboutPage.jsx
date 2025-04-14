@@ -33,7 +33,7 @@ const AboutPage = () => {
         <div className="absolute inset-0 bg-black opacity-60" />
         <div className="relative z-10 text-white text-center px-6">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-mont leading-tight animate-fade-in-up">
-            Kod Bizim Dilimiz, <br className="sm:hidden" /> Çözüm Sizin Hikayeniz
+          Şimdi ve Geleceğe, <br /> Ar-Ge ve İnovasyonla
           </h1>
         </div>
       </section>

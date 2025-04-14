@@ -43,14 +43,15 @@ const MainPage = () => {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black opacity-60"></div>
-        <div className="relative z-10 text-white px-6 text-center max-w-2xl">
-          <h1 className="text-3xl sm:text-5xl font-bold font-mont mb-4 animate-fade-in-up">
-            Kodun Gücüyle Zirveye
-          </h1>
+        <div className="relative z-10 text-white px-6 text-center max-w-5xl">
+          <h1 className="text-5xl sm:text-5xl font-bold font-mont mb-4 animate-fade-in-up">
+            KODTEPE</h1> <h1 className="text-3xl sm:text-5xl font-bold font-mont mb-4 animate-fade-in-up">
+            Yenilikçi Yazılım Çözümleri </h1> 
+            
+          
           <p className="text-base sm:text-lg font-inter text-gray-300 animate-fade-in-up leading-relaxed">
-            Yenilikçi bakış açımızla kodu sadece üretmiyor, aynı zamanda
-            tasarlıyor ve sürdürüyoruz. Kodtepe olarak hedefimiz, işinizi
-            yazılımın zirvesine taşımak.
+           
+            Yenilikçi ve sade yazılım çözümleriyle iş süreçlerinizi dijital çağa taşıyoruz. İhtiyacınıza özel çözümler geliştiriyoruz.
           </p>
         </div>
       </section>
