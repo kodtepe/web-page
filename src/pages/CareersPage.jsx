@@ -7,12 +7,12 @@ const CareersPage = () => {
   const roles = [
     {
       id: "backend",
-      title: "Backend Developer Stajyeri",
-      details: `Gelişim ekibimizle kodlarda, backend teknolojilerinde iş almayı ve kendini bu alanda geliştirmek isteyen Stajyer Backend Developer arıyoruz.
+      title: "Junior Backend Developer",
+      details: `Gelişim ekibimizle kodlarda, backend teknolojilerinde görev almayı ve kendini bu alanda geliştirmek isteyen Backend Developer arıyoruz.
 
-• Temel seviyede yazılım geliştirme hakkında bilgi
-• Herhangi bir backend diline giriş yapmış olması (Node.js tercih sebebi)
-• Temel düzeyde veritabanı bilgisi (MongoDB, MySQL)
+• Yazılım geliştirme hakkında bilgi
+• Node.js temel seviye bilgi sahibi
+• Veritabanı bilgisi (MongoDB, PostgreSQL)
 • Git versiyon kontrol bilgisi
 • Sorumluluk sahibi, problem çözme odaklı
 
@@ -21,13 +21,13 @@ Lokasyon: Çanakkale Teknopark
     },
     {
       id: "frontend",
-      title: "Frontend Developer Stajyeri",
-      details: `Kullanıcı arayüzü tasarımı konusunda kendini geliştirmek isteyen, React.js ile projelerde yer almak isteyen Frontend stajyeri arıyoruz.
+      title: "Junior Frontend Developer",
+      details: `Kullanıcı arayüzü tasarımı konusunda kendini geliştirmek isteyen, React.js ile projelerde yer almak isteyen Frontend Developer arıyoruz.
 
 • HTML, CSS, JavaScript bilgisi
-• React veya benzeri frameworklere ilgi
-• Responsive tasarım anlayışı
-• Git bilgisi
+• React.js temel seviye bilgi sahibi
+• Responsive tasarım
+• Git versiyon kontrol bilgisi
 
 Lokasyon: Çanakkale Teknopark
 `,
