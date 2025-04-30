@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
@@ -6,61 +6,85 @@ import Footer from "../components/Footer";
 
 const BlogDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [blog, setBlog] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBlog = async () => {
-      try {
-        const blogRef = doc(db, "blogs", id);
-        const blogSnap = await getDoc(blogRef);
-
-        if (blogSnap.exists()) {
-          setBlog(blogSnap.data());
-        } else {
-          console.log("Blog bulunamadı");
-        }
-      } catch (error) {
-        console.error("Blog verisi alınırken hata oluştu:", error);
-      } finally {
-        setLoading(false);
+      const docRef = doc(db, "blogs", id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setBlog(docSnap.data());
+      } else {
+        setBlog(null);
       }
     };
 
     fetchBlog();
   }, [id]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-gray-500 text-lg font-inter">
-        Yükleniyor...
-      </div>
-    );
-  }
-
   if (!blog) {
     return (
-      <div className="flex items-center justify-center min-h-screen text-red-600 text-lg font-inter">
+      <div className="text-center text-xl font-bold p-20">
         Blog bulunamadı.
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen flex flex-col bg-white font-inter">
-      {/* Başlık Alanı */}
-      <header className="bg-black text-white text-center py-14 px-6 shadow-md">
-        <h1 className="text-3xl sm:text-5xl font-bold font-mont animate-fade-in-up">
-          {blog.title}
-        </h1>
-      </header>
+  const formatDate = (timestamp) => {
+    const date = timestamp?.toDate?.();
+    return date
+      ? date.toLocaleDateString("tr-TR", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        })
+      : "Tarih belirtilmedi";
+  };
 
-      {/* İçerik */}
-      <main className="flex-grow px-6 py-16 max-w-4xl mx-auto">
-        <article className="text-gray-700 leading-relaxed whitespace-pre-line text-lg font-inter animate-fade-in-up">
-          {blog.summary}
-        </article>
-      </main>
+  return (
+    <div className="flex flex-col min-h-screen bg-white">
+      <section className="flex-1 w-full max-w-5xl mx-auto px-6 py-16 flex flex-col gap-12">
+        <button
+          onClick={() => navigate("/blog")}
+          className="self-start bg-yellow-400 text-black font-semibold px-5 py-2 rounded-md hover:bg-yellow-500 transition"
+        >
+          ◀ Geri Dön
+        </button>
+
+        <div className="flex justify-end text-sm text-gray-600 font-semibold">
+          {formatDate(blog.createdAt)}
+        </div>
+
+        <div className="flex flex-col gap-6">
+          <h1 className="text-3xl sm:text-4xl font-bold text-black">{blog.title}</h1>
+          <p className="text-gray-700 leading-relaxed whitespace-pre-line font-mulish text-lg">
+            {blog.content}
+          </p>
+        </div>
+
+        <div className="flex flex-col md:flex-row justify-between items-start gap-10 pt-12 border-t border-gray-300">
+          <div>
+            <h3 className="text-md font-semibold text-gray-700 mb-2">Yazan Kişi</h3>
+            <p className="text-black font-bold">{blog.author || "Kodtepe Ekibi"}</p>
+          </div>
+
+          <div>
+            <h3 className="text-md font-semibold text-gray-700 mb-2">Etiketler</h3>
+            <div className="flex flex-wrap gap-3">
+              {Array.isArray(blog.tags) &&
+                blog.tags.map((tag, i) => (
+                  <span
+                    key={i}
+                    className="px-4 py-1 bg-gray-200 text-gray-700 rounded-full text-sm font-medium"
+                  >
+                    {tag}
+                  </span>
+                ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <Footer />
     </div>

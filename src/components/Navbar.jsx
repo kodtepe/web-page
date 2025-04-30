@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react"; // lucide-react yüklü olmalı
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const location = useLocation();
@@ -8,10 +8,11 @@ const Navbar = () => {
 
   return (
     <nav className="bg-black text-white px-6 py-4 flex items-center justify-between relative shadow-md z-50">
-      {/* Logo */}
-      <div className="flex items-center">
-        <img src="/logo2.png" alt="Kodtepe Logo" className="h-12 w-auto" />
-      </div>
+      
+      {/* Logo (tıklanınca anasayfaya gider) */}
+      <Link to="/" onClick={() => setMenuAcik(false)} className="flex items-center">
+        <img src="/logo2.png" alt="Kodtepe Logo" className="h-12 w-auto cursor-pointer" />
+      </Link>
 
       {/* Hamburger Butonu */}
       <button
@@ -41,9 +42,11 @@ const Navbar = () => {
       >
         {[
           { path: "/", label: "Anasayfa" },
-          { path: "/contact", label: "İletişim" },
+          { path: "/blog", label: "Bloglarımız" },
           { path: "/about", label: "Hakkımızda" },
           { path: "/careers", label: "Kariyer" },
+          { path: "/contact", label: "İletişim" },
+
         ].map(({ path, label }) => (
           <Link
             key={path}
