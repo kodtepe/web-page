@@ -63,8 +63,12 @@ const MainPage = () => {
         <h2 className="text-3xl text-[#F4D16A] font-bold font-mont">Bloglarımız</h2>
       </div>
 
-      {/* BLOG */}
-      <section className="bg-white py-20 px-6 text-center">
+      {/* BLOG BÖLÜMÜ */}
+     <section className="bg-white py-20 px-6 text-center">
+        <h2 className="text-4xl font-mont font-bold italic mb-20 text-black animate-fade-in-up">
+          Bloglarımız
+        </h2>
+
         <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
           {[...blogData]
             .sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds) // createdAt varsa sıralar
@@ -96,10 +100,10 @@ const MainPage = () => {
             Bloglarımız ➜
           </Link>
         </div>
-      </section>
+      </section> 
 
       {/* MODAL */}
-      {clickedIndex !== null && blogData[clickedIndex] && (
+    {clickedIndex !== null && blogData[clickedIndex] && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl max-w-md w-full p-6 text-left shadow-2xl relative animate-fade-in-up">
             <button
@@ -120,7 +124,7 @@ const MainPage = () => {
             </Link>
           </div>
         </div>
-      )}
+      )} 
 
       {/* BOŞLUK: Blog -> About */}
       <div className="py-24 sm:py-32" />

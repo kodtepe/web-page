@@ -112,7 +112,8 @@ const CareersPage = () => {
             Kariyerini Kodtepe’yle Planla
           </h1>
           <p className="mt-4 text-base font-inter leading-relaxed text-gray-400 sm:text-lg max-w-2xl mx-auto animate-fade-in-up">
-            Kodtepe’nin kültürünü tanıman ve birlikte geliştirmemiz için seni ekip arkadaşımız olarak görmekten mutluluk duyarız.
+            Kodtepe’nin kültürünü tanıman ve birlikte geliştirmemiz için seni ekip arkadaşımız olarak görmekten mutluluk
+            duyarız.
           </p>
         </div>
       </section>
@@ -163,10 +164,7 @@ const CareersPage = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
             <h2 className="text-2xl font-mont font-bold text-black text-center mb-6">CV Bırakma Formu</h2>
-            <button
-              onClick={closeModal}
-              className="absolute top-2 right-2 text-gray-600 hover:text-black"
-            >
+            <button onClick={closeModal} className="absolute top-2 right-2 text-gray-600 hover:text-black">
               ✖
             </button>
 
@@ -177,11 +175,49 @@ const CareersPage = () => {
             )}
 
             <form onSubmit={handleSubmit} className="flex flex-col space-y-3 text-black">
-              <input type="text" name="name" placeholder="Adınız" value={formData.name} onChange={handleChange} required className="border p-2 rounded" />
-              <input type="text" name="surname" placeholder="Soyadınız" value={formData.surname} onChange={handleChange} required className="border p-2 rounded" />
-              <input type="email" name="email" placeholder="E-mail Adresiniz" value={formData.email} onChange={handleChange} required className="border p-2 rounded" />
-              <input type="tel" name="phone" placeholder="Telefon Numaranız" value={formData.phone} onChange={handleChange} required className="border p-2 rounded" />
-              <textarea name="message" placeholder="Kendinizi kısaca tanıtın." value={formData.message} onChange={handleChange} className="border p-2 rounded" />
+              <input
+                type="text"
+                name="name"
+                placeholder="Adınız"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="border p-2 rounded"
+              />
+              <input
+                type="text"
+                name="surname"
+                placeholder="Soyadınız"
+                value={formData.surname}
+                onChange={handleChange}
+                required
+                className="border p-2 rounded"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="E-mail Adresiniz"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="border p-2 rounded"
+              />
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Telefon Numaranız"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+                className="border p-2 rounded"
+              />
+              <textarea
+                name="message"
+                placeholder="Kendinizi kısaca tanıtın."
+                value={formData.message}
+                onChange={handleChange}
+                className="border p-2 rounded"
+              />
               <button type="submit" className="bg-green-500 text-white py-2 rounded hover:bg-green-600 transition">
                 Başvur
               </button>
