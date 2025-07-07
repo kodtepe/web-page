@@ -23,9 +23,7 @@ const Applications = () => {
   const toggleReadStatus = async (id, currentStatus) => {
     setLoading(true);
     const ref = doc(db, "applications", id);
-    await updateDoc(ref, {
-      read: !currentStatus,
-    });
+    await updateDoc(ref, { read: !currentStatus });
     await fetchApplications();
   };
 
@@ -40,12 +38,11 @@ const Applications = () => {
   }, []);
 
   return (
-    <div className="space-y-4 relative">
-      {/* Modern Loading Bar */}
+    <div className="space-y-6 relative">
       {loading && (
         <div className="fixed top-0 left-0 w-full z-50">
           <div className="h-1 w-full bg-gray-200 overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-[#f87171] via-[#facc15] to-[#4ade80] animate-[loading_1.5s_infinite]"></div>
+            <div className="h-full bg-gradient-to-r from-[#f87171] via-[#facc15] to-[#4ade80] animate-[loading_1.5s_infinite]" />
           </div>
         </div>
       )}
@@ -53,87 +50,82 @@ const Applications = () => {
       <style>
         {`
           @keyframes loading {
-            0% {
-              transform: translateX(-100%);
-            }
-            50% {
-              transform: translateX(0%);
-            }
-            100% {
-              transform: translateX(100%);
-            }
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(0%); }
+            100% { transform: translateX(100%); }
           }
         `}
       </style>
 
-      <h2 className="text-xl font-bold text-center text-black">Başvuru Yapanlar</h2>
+      <h2 className="text-2xl font-bold text-center text-gray-800">Başvuru Yapanlar</h2>
 
-      {applications.map((app) => {
-        const isExpanded = expandedIds.includes(app.id);
-        return (
-          <div
-            key={app.id}
-            className={`relative bg-[#FAD76F] p-4 rounded-2xl shadow-lg space-y-2 transition-all duration-300 ${
-              isExpanded ? "max-h-full" : "overflow-hidden"
-            }`}
-          >
-            <span
-              className={`absolute top-2 right-2 w-3 h-3 rounded-full ${
-                app.read ? "bg-green-500" : "bg-red-500"
+      {applications.length === 0 && !loading ? (
+        <p className="text-center text-gray-500">Henüz başvuru yapılmamış.</p>
+      ) : (
+        applications.map((app) => {
+          const isExpanded = expandedIds.includes(app.id);
+          return (
+            <div
+              key={app.id}
+              className={`bg-white border border-gray-200 p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 ${
+                isExpanded ? "max-h-full" : "overflow-hidden"
               }`}
-            ></span>
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-semibold text-lg text-gray-800">{app.name} {app.surname}</h3>
+                  <p className="text-sm text-gray-600">
+                    <strong>Pozisyon:</strong> {app.position || "Belirtilmemiş"}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Email:</strong> {app.email}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Tel:</strong> {app.phone}
+                  </p>
+                </div>
+                <span
+                  className={`w-3 h-3 rounded-full mt-1 ${
+                    app.read ? "bg-green-500" : "bg-red-500"
+                  }`}
+                  title={app.read ? "Okundu" : "Okunmadı"}
+                />
+              </div>
 
-            <p className="text-black">
-              <strong>Adı:</strong> {app.name}
-            </p>
-            <p className="text-black">
-              <strong>Soyadı:</strong> {app.surname}
-            </p>
-            <p className="text-black">
-              <strong>E-mail Adresi:</strong> {app.email}
-            </p>
-            <p className="text-black">
-              <strong>Tel No:</strong> {app.phone}
-            </p>
-            <p className="text-black">
-              <strong>Başvurduğu Pozisyon:</strong> {app.position || "Belirtilmemiş"}
-            </p>
+              {isExpanded && (
+                <p className="mt-3 text-gray-700">
+                  <strong>Tanıtım:</strong> {app.message}
+                </p>
+              )}
 
-            {isExpanded && (
-              <p className="text-black">
-                <strong>Tanıtım:</strong> {app.message}
-              </p>
-            )}
-
-            <div className="flex flex-wrap gap-2 mt-2">
-              <button
-                onClick={() => toggleExpand(app.id)}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-md shadow"
-              >
-                {isExpanded ? "Küçült" : "Devamını Oku"}
-              </button>
-
-              <button
-                onClick={() => toggleReadStatus(app.id, app.read)}
-                className={`${
-                  app.read
-                    ? "bg-yellow-400 hover:bg-yellow-500"
-                    : "bg-gray-500 hover:bg-gray-600"
-                } text-white px-4 py-1 rounded-md shadow`}
-              >
-                {app.read ? "Okunmadı Yap" : "Okundu Yap"}
-              </button>
-
-              <button
-                onClick={() => deleteApplication(app.id)}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-md shadow"
-              >
-                Sil
-              </button>
+              <div className="flex flex-wrap gap-2 mt-4">
+                <button
+                  onClick={() => toggleExpand(app.id)}
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded"
+                >
+                  {isExpanded ? "Küçült" : "Devamını Oku"}
+                </button>
+                <button
+                  onClick={() => toggleReadStatus(app.id, app.read)}
+                  className={`${
+                    app.read
+                      ? "bg-yellow-400 hover:bg-yellow-500"
+                      : "bg-gray-500 hover:bg-gray-600"
+                  } text-white px-4 py-1 rounded`}
+                >
+                  {app.read ? "Okunmadı Yap" : "Okundu Yap"}
+                </button>
+                <button
+                  onClick={() => deleteApplication(app.id)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded"
+                >
+                  Sil
+                </button>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      )}
     </div>
   );
 };

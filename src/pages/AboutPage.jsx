@@ -147,7 +147,6 @@ const AboutPage = () => {
         <div className="w-full flex justify-center">{renderContent()}</div>
       </section>
 
-      <Footer />
     </div>
   );
 };

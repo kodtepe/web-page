@@ -86,7 +86,6 @@ const BlogDetailPage = () => {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 };

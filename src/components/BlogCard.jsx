@@ -1,30 +1,23 @@
 import { useState } from "react";
 
-const BlogCard = ({ title }) => {
-  const [clicked, setClicked] = useState(false);
-
-  const handleClick = () => {
-    setClicked(true);
-  };
-
+const BlogCard = ({ title, content }) => {
   return (
     <div
-      onClick={handleClick}
-      className="relative group bg-gradient-to-br from-yellow-100 to-white h-48 rounded-xl shadow-md flex items-end justify-center p-4 overflow-hidden cursor-pointer transition duration-300 hover:shadow-xl"
+      className="relative cursor-pointer group rounded-xl overflow-hidden shadow hover:shadow-2xl transition duration-300 bg-gradient-to-br from-yellow-300 to-yellow-100 h-72 flex flex-col justify-end p-6"
     >
-      {/* Hover'da çıkan 'Daha Fazla' etiketi */}
-      {!clicked && (
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 ease-in-out z-20">
-          <span className="text-base font-semibold font-inter text-white bg-black bg-opacity-70 px-4 py-2 rounded-lg shadow-sm">
-            Daha fazla
-          </span>
-        </div>
-      )}
-
-      {/* Blog başlığı */}
-      <span className="relative z-10 text-center font-mont text-lg text-gray-700 font-semibold group-hover:opacity-60 group-hover:-translate-y-1 transition duration-300">
+      <h3 className="text-black text-xl font-bold mb-2 font-mont group-hover:text-black transition">
         {title}
-      </span>
+      </h3>
+      <p className="text-gray-800 text-sm mb-4 font-inter line-clamp-3 group-hover:text-black transition">
+        {content?.slice(0, 100)}...
+      </p>
+      <div className="flex justify-center">
+        <span
+          className="inline-block text-sm font-medium text-black bg-white bg-opacity-80 px-4 py-2 rounded-full group-hover:bg-opacity-100 transition"
+        >
+          Daha fazla oku
+        </span>
+      </div>
     </div>
   );
 };

@@ -226,7 +226,6 @@ const CareersPage = () => {
         </div>
       )}
 
-      <Footer />
     </div>
   );
 };

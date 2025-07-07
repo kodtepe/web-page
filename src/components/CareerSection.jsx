@@ -1,77 +1,95 @@
 import { useState, useEffect } from "react";
+import { collection, getDocs, addDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
 const CareerSection = () => {
+  const [jobList, setJobList] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const roles = [
-    {
-      id: "stajyer",
-      title: "Stajyer",
-      shortDescription:
-        "Kodtepe, yazılım alanında kariyerine yön vermek isteyen yetenekli stajyer adaylarını ekibine katmaya hazırlanıyor.",
-      longDescription:
-        "Stajyer için uzun açıklama alanı. Yazılım geliştirme süreçlerine katkıda bulunacak, ekip çalışmasına uyum sağlayacak, yeni teknolojileri öğrenmeye açık takım arkadaşları arıyoruz.",
-    },
-    {
-      id: "backend",
-      title: "Backend Developer",
-      shortDescription:
-        "Kodtepe olarak; ölçeklenebilir, güvenli ve performans odaklı sistemler geliştirecek, backend süreçlerine hâkim takım arkadaşları arıyoruz.",
-      longDescription:
-        "Backend Developer için uzun açıklama. Node.js, MongoDB gibi teknolojilere hakim, ölçeklenebilir ve güvenli sistemler kurabilecek yazılımcılar arıyoruz.",
-    },
-    {
-      id: "icerik",
-      title: "Sosyal Medya İçerik Üreticisi",
-      shortDescription:
-        "Marka kimliğimizi dijitalde etkili biçimde yansıtacak, yaratıcı ve stratejik içerikler üretecek sosyal medya içerik üreticisi arıyoruz.",
-      longDescription:
-        "İçerik üreticisi için açıklama. Marka dili ile uyumlu yaratıcı içerikler üretecek, sosyal medya kampanyalarını yönetecek kişiler arıyoruz.",
-    },
-  ];
+  const [formData, setFormData] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    phone: "",
+    message: "",
+    position: "",
+  });
+
+  const navigate = useNavigate();
 
   const toggleDetails = (id) => {
     setOpenId(openId === id ? null : id);
   };
 
-  const openModal = () => {
+  const openModal = (position) => {
+    setFormData((prev) => ({ ...prev, position }));
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setFormData({
+      name: "",
+      surname: "",
+      email: "",
+      phone: "",
+      message: "",
+      position: "",
+    });
+    setSuccessMessage("");
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await addDoc(collection(db, "applications"), formData);
+      setSuccessMessage("Başvurunuz başarıyla gönderildi!");
+      setFormData({
+        name: "",
+        surname: "",
+        email: "",
+        phone: "",
+        message: "",
+        position: "",
+      });
+      setTimeout(() => setSuccessMessage(""), 5000);
+    } catch (error) {
+      console.error("Başvuru kaydedilemedi:", error);
+      alert("Bir hata oluştu. Lütfen tekrar deneyin.");
+    }
   };
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("opacity-100", "translate-y-0");
-            entry.target.classList.remove("opacity-0", "translate-y-10");
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    const elements = document.querySelectorAll(".scroll-fade");
-    elements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
+    const fetchJobs = async () => {
+      const querySnapshot = await getDocs(collection(db, "jobs"));
+      const jobs = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setJobList(jobs.slice(0, 3)); // sadece ilk 3 ilan
+    };
+    fetchJobs();
   }, []);
 
   return (
-    <div className="flex flex-col bg-white font-mulish">
-      {/* Başlık */}
-      <h2 className="text-4xl font-mont font-bold italic mb-5 py-16 px-6 text-black text-center scroll-fade opacity-0 translate-y-10 transition-all duration-700 ease-in-out">
-        Açık Pozisyonlar
+    <section className="w-full px-6 py-16 bg-gray-100 font-mulish">
+      <h2 className="text-3xl font-bold font-mont italic mb-10 text-center text-black">
+        Ekibimize Katıl
       </h2>
 
-      {/* Kartlar */}
-      <section className="w-full px-6 py-16 bg-white max-w-6xl mx-auto space-y-6 scroll-fade opacity-0 translate-y-10 transition-all duration-700 ease-in-out">
-        {roles.map((role) => (
+      <div className="max-w-6xl mx-auto space-y-6">
+        {jobList.map((role) => (
           <div
             key={role.id}
             className={`rounded-lg p-6 transition-all duration-300 ${
@@ -80,8 +98,8 @@ const CareerSection = () => {
           >
             <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-xl font-bold text-black">{role.title}</h2>
-                <p className="text-black text-base font-inter">{role.shortDescription}</p>
+                <h3 className="text-xl font-bold text-black">{role.position}</h3>
+                <p className="text-black text-base font-inter">{role.short}</p>
               </div>
               <button
                 onClick={() => toggleDetails(role.id)}
@@ -91,12 +109,11 @@ const CareerSection = () => {
               </button>
             </div>
 
-            {/* Detay */}
             {openId === role.id && (
-              <div className="mt-4 transition-all duration-500 ease-in-out">
-                <p className="text-black mb-4 text-base font-inter">{role.longDescription}</p>
+              <div className="mt-4">
+                <p className="text-black mb-4 text-base font-inter">{role.detail}</p>
                 <button
-                  onClick={openModal}
+                  onClick={() => openModal(role.position)}
                   className="bg-red-500 text-white px-5 py-2 rounded hover:bg-red-600 transition"
                 >
                   Başvur
@@ -105,33 +122,91 @@ const CareerSection = () => {
             )}
           </div>
         ))}
-      </section>
+      </div>
 
-      {/* Modal */}
+      <div className="mt-8 text-center">
+        <button
+          onClick={() => navigate("/careers")}
+          className="bg-[#F4D16A] text-black font-bold px-6 py-2 rounded hover:bg-[#F5DC96] transition"
+        >
+          Tüm İlanları Gör
+        </button>
+      </div>
+
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
-            <h2 className="text-2xl font-mont font-bold text-black text-center mb-4">
+            <h2 className="text-2xl font-mont font-bold text-black text-center mb-6">
               CV Bırakma Formu
             </h2>
-            <button onClick={closeModal} className="absolute top-2 right-2 text-gray-600 hover:text-black">
+            <button
+              onClick={closeModal}
+              className="absolute top-2 right-2 text-gray-600 hover:text-black"
+            >
               ✖
             </button>
-            <form className="flex flex-col space-y-3 text-black">
-              <input type="text" placeholder="Adınız" required className="border p-2 rounded" />
-              <input type="text" placeholder="Soyadınız" required className="border p-2 rounded" />
-              <input type="email" placeholder="E-mail Adresiniz" required className="border p-2 rounded" />
-              <input type="tel" placeholder="Telefon Numaranız" required pattern="[0-9]*" className="border p-2 rounded" />
-              <input type="file" required className="border p-2 rounded" />
-              <textarea placeholder="Size nasıl yardımcı olabiliriz?" className="border p-2 rounded" />
-              <button type="submit" className="bg-green-500 text-white py-2 rounded hover:bg-green-600 transition">
+
+            {successMessage && (
+              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mb-4 text-center font-medium shadow transition-all duration-300">
+                {successMessage}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="flex flex-col space-y-3 text-black">
+              <input
+                type="text"
+                name="name"
+                placeholder="Adınız"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="border p-2 rounded"
+              />
+              <input
+                type="text"
+                name="surname"
+                placeholder="Soyadınız"
+                value={formData.surname}
+                onChange={handleChange}
+                required
+                className="border p-2 rounded"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="E-mail Adresiniz"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="border p-2 rounded"
+              />
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Telefon Numaranız"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+                className="border p-2 rounded"
+              />
+              <textarea
+                name="message"
+                placeholder="Kendinizi kısaca tanıtın."
+                value={formData.message}
+                onChange={handleChange}
+                className="border p-2 rounded"
+              />
+              <button
+                type="submit"
+                className="bg-green-500 text-white py-2 rounded hover:bg-green-600 transition"
+              >
                 Başvur
               </button>
             </form>
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

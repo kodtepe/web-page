@@ -1,28 +1,24 @@
 import { useState, useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import ContactSection from "../components/ContactSection";
 import CareerSection from "../components/CareerSection";
 import AboutSection from "../components/AboutSection";
 
 const MainPage = () => {
-  const [clickedIndex, setClickedIndex] = useState(null);
   const [blogData, setBlogData] = useState([]);
-
-  const handleCardClick = (index) => {
-    setClickedIndex(index);
-  };
-
-  const closeModal = () => {
-    setClickedIndex(null);
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const snapshot = await getDocs(collection(db, "blogs"));
+        const q = query(
+          collection(db, "blogs"),
+          where("approved", "==", true) // SADECE ONAYLANMIŞ BLOG
+        );
+        const snapshot = await getDocs(q);
         const blogs = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -38,7 +34,6 @@ const MainPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen font-mulish bg-white text-black">
-
       {/* HERO */}
       <section className="relative w-full h-[70vh] flex items-center justify-center overflow-hidden">
         <img
@@ -64,67 +59,59 @@ const MainPage = () => {
       </div>
 
       {/* BLOG BÖLÜMÜ */}
-     <section className="bg-white py-20 px-6 text-center">
-        <h2 className="text-4xl font-mont font-bold italic mb-20 text-black animate-fade-in-up">
-          Bloglarımız
-        </h2>
-
-        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+      <section className="bg-white py-20 px-6 text-center">
+        <div className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
           {[...blogData]
-            .sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds) // createdAt varsa sıralar
-            .slice(0, 3) // sadece son 3 blog
-            .map((blog, index) => (
+            .sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds)
+            .slice(0, 3)
+            .map((blog) => (
               <div
                 key={blog.id}
-                onClick={() => handleCardClick(index)}
-                className="relative group bg-gradient-to-br from-yellow-400 to-white h-48 rounded-xl shadow-md flex items-end justify-center p-4 cursor-pointer transition duration-300 hover:shadow-xl"
+                onClick={() => navigate(`/blog/${blog.id}`)}
+                className="group bg-white border border-gray-200 rounded-xl overflow-hidden shadow hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 cursor-pointer"
               >
-                {!clickedIndex && (
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 ease-in-out z-20">
-                    <span className="text-base font-semibold font-inter text-white bg-black bg-opacity-70 px-4 py-2 rounded-lg">
-                      Daha fazla
-                    </span>
+                {/* Sabit Kapak Görseli */}
+                <div className="w-full h-48 overflow-hidden">
+                  <img
+                    src="/kodtepeblog.png"
+                    alt={blog.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                  />
+                </div>
+
+                {/* İçerik */}
+                <div className="p-5 flex flex-col justify-between h-56">
+                  <div>
+                    <h3 className="text-lg font-bold font-mont text-gray-900 mb-2 group-hover:text-yellow-500 transition">
+                      {blog.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm font-inter line-clamp-3">
+                      {(blog.summary || blog.content)?.slice(0, 120)}...
+                    </p>
                   </div>
-                )}
-                <span className="relative z-10 font-mont text-lg text-gray-700 font-semibold group-hover:opacity-60 transition">
-                  {blog.title}
-                </span>
+                  <div className="flex items-center justify-between mt-4">
+                    <span className="text-xs text-gray-500 font-inter">
+                      {blog.author || "Kodtepe"}
+                    </span>
+                    <button
+                      className="text-sm text-yellow-600 font-semibold hover:text-yellow-700 transition"
+                    >
+                      Daha Fazla Oku →
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
         </div>
         <div className="max-w-6xl mx-auto text-right mt-6">
           <Link
             to="/blog"
-            className="text-blue-600 underline font-inter font-medium hover:text-blue-800 transition"
+            className="text-yellow-600 underline font-inter font-medium hover:text-yellow-800 transition"
           >
-            Bloglarımız ➜
+            Tüm Bloglar ➜
           </Link>
         </div>
-      </section> 
-
-      {/* MODAL */}
-    {clickedIndex !== null && blogData[clickedIndex] && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 text-left shadow-2xl relative animate-fade-in-up">
-            <button
-              className="absolute top-2 right-3 text-gray-600 hover:text-black text-xl"
-              onClick={closeModal}
-            >
-              &times;
-            </button>
-            <h3 className="text-xl font-bold mb-3 font-mont">{blogData[clickedIndex].title}</h3>
-            <p className="text-gray-700 mb-4 font-inter whitespace-pre-line">
-              {blogData[clickedIndex].summary}
-            </p>
-            <Link
-              to={`/blog/${blogData[clickedIndex].id}`}
-              className="inline-block mt-2 text-white bg-yellow-500 hover:bg-yellow-600 font-semibold font-mulish px-4 py-2 rounded-md transition"
-            >
-              Blog Detayına Git
-            </Link>
-          </div>
-        </div>
-      )} 
+      </section>
 
       {/* BOŞLUK: Blog -> About */}
       <div className="py-24 sm:py-32" />
@@ -156,8 +143,6 @@ const MainPage = () => {
 
       <CareerSection />
 
-      {/* FOOTER */}
-      <Footer />
     </div>
   );
 };

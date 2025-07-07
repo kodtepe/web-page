@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { collection, onSnapshot } from "firebase/firestore"; // 🔁 getDocs yerine
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 import Footer from "../components/Footer";
 
@@ -10,9 +10,11 @@ const BlogPage = () => {
 
   const handleCardClick = (id) => navigate(`/blog/${id}`);
 
-  // Firestore'dan anlık blog verisini dinle
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "blogs"), (snapshot) => {
+    // Sadece onaylanmış bloglar için sorgu
+    const q = query(collection(db, "blogs"), where("approved", "==", true));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const blogList = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -20,74 +22,78 @@ const BlogPage = () => {
       setBlogs(blogList);
     });
 
-    return () => unsubscribe(); // cleanup
-  }, []);
-
-  // Scroll efektleri
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("opacity-100", "translate-y-0");
-            entry.target.classList.remove("opacity-0", "translate-y-10");
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    const elements = document.querySelectorAll(".scroll-fade");
-    elements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
+    return () => unsubscribe();
   }, []);
 
   return (
     <div className="flex flex-col bg-white">
       {/* HERO */}
       <section className="relative w-full h-[70vh] flex items-center justify-center overflow-hidden">
-        <img src="/blog.png" alt="Blog" className="absolute inset-0 w-full h-full object-cover" />
+        <img
+          src="/blog.png"
+          alt="Blog"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
         <div className="absolute inset-0 bg-black opacity-70" />
         <div className="relative z-10 text-white text-center px-6">
-          <h1 className="text-5xl font-bold font-mont mb-4 scroll-fade opacity-0 translate-y-10 transition-all duration-700 ease-in-out">
+          <h1 className="text-5xl font-bold font-mont mb-4">
             Bloglarımız
           </h1>
-          <p className="text-lg font-inter text-gray-300 leading-relaxed scroll-fade opacity-0 translate-y-10 transition-all duration-700 ease-in-out sm:text-lg max-w-2xl mx-auto">
-            Kodtepe olarak birlikte öğrenmeye, gelişime ve açık iletişime değer veriyoruz. Yenilikçi çözümler üretirken
-            eğlenmeyi, paylaşmayı ve sürekli gelişmeyi önemsiyoruz.
+          <p className="text-lg font-inter text-gray-300 leading-relaxed sm:text-lg max-w-2xl mx-auto">
+            Kodtepe olarak birlikte öğrenmeye, gelişime ve açık iletişime değer veriyoruz.
           </p>
         </div>
       </section>
 
       {/* Başlık */}
-      <h2 className="text-4xl font-mont font-bold italic mb-20 pt-16 px-6 text-black text-center scroll-fade opacity-0 translate-y-10 transition-all duration-700 ease-in-out">
-        Bloglarımız
+      <h2 className="text-4xl font-mont font-bold italic mb-16 pt-16 px-6 text-black text-center">
+        Son Yazılar
       </h2>
 
-      {/* Bloglar */}
-      <section className="px-6 pb-20 text-center">
-        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto scroll-fade opacity-0 translate-y-10 transition-all duration-700 ease-in-out">
+      {/* Blog Grid */}
+      <section className="px-6 pb-20">
+        <div className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
           {blogs.map((blog) => (
             <div
               key={blog.id}
               onClick={() => handleCardClick(blog.id)}
-              className="relative group bg-gradient-to-br from-yellow-400 to-white h-48 rounded-xl shadow-md flex items-end justify-center p-4 cursor-pointer hover:shadow-xl transition"
+              className="group bg-white border border-gray-200 rounded-xl overflow-hidden shadow hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 cursor-pointer"
             >
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 ease-in-out z-20">
-                <span className="text-base font-semibold font-inter text-white bg-black bg-opacity-70 px-4 py-2 rounded-lg">
-                  Daha fazla
-                </span>
+              {/* Sabit Kapak Görseli */}
+              <div className="w-full h-48 overflow-hidden">
+                <img
+                  src="/kodtepeblog.png"
+                  alt={blog.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                />
               </div>
-              <span className="relative z-10 font-mont text-lg text-gray-700 font-semibold group-hover:opacity-60 transition">
-                {blog.title}
-              </span>
+
+              {/* İçerik */}
+              <div className="p-5 flex flex-col justify-between h-56">
+                <div>
+                  <h3 className="text-lg font-bold font-mont text-gray-900 mb-2 group-hover:text-yellow-500 transition">
+                    {blog.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm font-inter line-clamp-3">
+                    {blog.content.slice(0, 120)}...
+                  </p>
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  <span className="text-xs text-gray-500 font-inter">
+                    {blog.author || "Kodtepe Ekibi"}
+                  </span>
+                  <button
+                    className="text-sm text-yellow-600 font-semibold hover:text-yellow-700 transition"
+                  >
+                    Daha Fazla Oku →
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 };

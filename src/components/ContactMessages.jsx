@@ -52,12 +52,12 @@ const ContactMessages = () => {
   }, []);
 
   return (
-    <div className="space-y-4 relative">
+    <div className="relative space-y-6">
       {/* Modern Loading Bar */}
       {loading && (
         <div className="fixed top-0 left-0 w-full z-50">
           <div className="h-1 w-full bg-gray-200 overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-[#f87171] via-[#facc15] to-[#4ade80] animate-[loading_1.5s_infinite]"></div>
+            <div className="h-full bg-gradient-to-r from-[#f87171] via-[#facc15] to-[#4ade80] animate-[loading_1.5s_infinite]" />
           </div>
         </div>
       )}
@@ -72,7 +72,7 @@ const ContactMessages = () => {
         `}
       </style>
 
-      <h2 className="text-xl font-bold text-center text-black">Mesajlar</h2>
+      <h2 className="text-2xl font-bold text-center text-gray-800">Gelen Mesajlar</h2>
 
       {messages.length === 0 && !loading ? (
         <p className="text-center text-gray-500">Hiç mesaj bulunamadı.</p>
@@ -80,34 +80,29 @@ const ContactMessages = () => {
         messages.map((msg) => (
           <div
             key={msg.id}
-            className="bg-[#FAD76F] p-4 rounded-2xl shadow-lg flex justify-between items-center"
+            className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
           >
-            <div>
-              <h3 className="font-bold text-black text-lg">{msg.name}</h3>
-              <p className="text-black text-sm mt-1">{msg.message}</p>
-            </div>
-
-            <div className="flex items-center gap-2">
+            <div className="flex-1 space-y-1">
+              <h3 className="font-semibold text-lg text-gray-800">{msg.name}</h3>
+              <p className="text-gray-600">{msg.message}</p>
               <span
-                className={`w-3 h-3 rounded-full ${
-                  msg.read ? "bg-green-500" : "bg-red-500"
+                className={`inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full ${
+                  msg.read ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
                 }`}
-              ></span>
-
+              >
+                {msg.read ? "Okundu" : "Okunmadı"}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => toggleReadStatus(msg.id, msg.read)}
-                className={`${
-                  msg.read
-                    ? "bg-yellow-500 hover:bg-yellow-600"
-                    : "bg-gray-500 hover:bg-gray-600"
-                } text-white px-4 py-1 rounded-md shadow`}
+                className="flex items-center gap-1 bg-yellow-400 hover:bg-yellow-500 text-black font-medium px-3 py-1 rounded transition"
               >
                 {msg.read ? "Okunmadı Yap" : "Okundu Yap"}
               </button>
-
               <button
                 onClick={() => deleteMessage(msg.id)}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-md shadow"
+                className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white font-medium px-3 py-1 rounded transition"
               >
                 Sil
               </button>
