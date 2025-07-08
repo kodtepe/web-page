@@ -5,19 +5,25 @@ import { db } from "../firebase";
 const UserProfileSection = ({ user, onBack }) => {
   const [userBlogs, setUserBlogs] = useState([]);
 
-const fetchUserBlogs = async () => {
-  const q = query(
-    collection(db, "blogs"),
-    where("authorId", "==", user.uid)
-  );
-  const snapshot = await getDocs(q);
-  console.log("Fetched blogs for user:", user.uid, snapshot.docs);
-  setUserBlogs(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-};
-
+  const fetchUserBlogs = async () => {
+    if (!user || !user.uid) return; // ❗ Güvenlik kontrolü eklendi
+    try {
+      const q = query(
+        collection(db, "blogs"),
+        where("authorId", "==", user.uid)
+      );
+      const snapshot = await getDocs(q);
+      console.log("Fetched blogs for user:", user.uid, snapshot.docs);
+      setUserBlogs(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+    } catch (error) {
+      console.error("Bloglar alınırken hata oluştu:", error);
+    }
+  };
 
   useEffect(() => {
-    fetchUserBlogs();
+    if (user && user.uid) {
+      fetchUserBlogs();
+    }
   }, [user]);
 
   // Onay durumlarını say
@@ -36,23 +42,23 @@ const fetchUserBlogs = async () => {
 
       <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-md">
         <h3 className="text-2xl font-semibold mb-4 text-gray-800">
-          {user.name || "İsimsiz Kullanıcı"} Profili
+          {user?.name || "İsimsiz Kullanıcı"} Profili
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <p className="text-gray-700">
-              <span className="font-medium">E-mail:</span> {user.email}
+              <span className="font-medium">E-mail:</span> {user?.email}
             </p>
             <p className="text-gray-700">
-              <span className="font-medium">Rol:</span> {user.role}
+              <span className="font-medium">Rol:</span> {user?.role}
             </p>
-            {user.createdAt && (
+            {user?.createdAt && (
               <p className="text-gray-700">
                 <span className="font-medium">Kayıt Tarihi:</span>{" "}
                 {user.createdAt.toDate().toLocaleString()}
               </p>
             )}
-            {user.lastSeen && (
+            {user?.lastSeen && (
               <p className="text-gray-700">
                 <span className="font-medium">Son Görülme:</span>{" "}
                 {user.lastSeen.toDate().toLocaleString()}
